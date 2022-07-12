@@ -37,6 +37,35 @@ class Device(BaseModel):
 class Devices(BaseModel):
     devices: List[Device]
 
+    def __getitem__(self, item):
+        # by device id
+        for device in self.devices:
+            if device.id == str(item):
+                return device
+
+        # by serial_number
+        for device in self.devices:
+            if device.serial_number == str(item):
+                return device
+
+        # by camera_id
+        for device in self.devices:
+            if device.camera_id == str(item):
+                return device
+
+        # by name_by_user
+        for device in self.devices:
+            if device.name_by_user == str(item):
+                return device
+
+        return self.devices[item]
+
+    def __iter__(self):
+        return iter(self.devices)
+
+    def __len__(self):
+        return len(self.devices)
+
 
 class DevicesResponse(BaseModel):
     data: Devices

@@ -1,9 +1,9 @@
 from httpx import AsyncClient
 
-from keyrt.models.cameras import CamerasResponse
-from keyrt.models.codes import CodesResponse
-from keyrt.models.devices import DevicesResponse
-from keyrt.models.user import UserResponse
+from keyrt.models.cameras import Cameras, CamerasResponse
+from keyrt.models.codes import Codes, CodesResponse
+from keyrt.models.devices import DevicesResponse, Devices
+from keyrt.models.user import User, UserResponse
 
 
 class KeyRT:
@@ -18,19 +18,19 @@ class KeyRT:
             self._session.headers["Authorization"] = f"Bearer {self._access_token}"
         return self._session
 
-    async def current_user(self) -> UserResponse:
+    async def current_user(self) -> User:
         response = await self.session.get(
             url="/v3/app/users/current",
         )
 
-        return UserResponse(**response.json())
+        return UserResponse(**response.json()).data
 
-    async def get_devices(self) -> DevicesResponse:
+    async def get_devices(self) -> Devices:
         response = await self.session.get(url="/v2/app/devices/intercom")
 
-        return DevicesResponse(**response.json())
+        return DevicesResponse(**response.json()).data
 
-    async def get_cameras(self) -> CamerasResponse:
+    async def get_cameras(self) -> Cameras:
         response = await self.session.get(
             url="https://vc.key.rt.ru/api/v1/cameras",
             params={
@@ -39,21 +39,21 @@ class KeyRT:
             },
         )
 
-        return CamerasResponse(**response.json())
+        return CamerasResponse(**response.json()).data
 
-    async def open_device(self, device_id: str) -> int:
+    async def open_device(self, device_id: str) -> bool:
         response = await self.session.post(
             url=f"/v2/app/devices/{device_id}/open",
         )
 
         return response.status_code == 200
 
-    async def get_codes(self) -> CodesResponse:
+    async def get_codes(self) -> Codes:
         response = await self.session.get(
             url="/v3/app/devices/codes",
         )
 
-        return CodesResponse(**response.json())
+        return CodesResponse(**response.json()).data
 
     async def generate_code(self, device_ids: list[int] | int, flat_id: int) -> bool:
         response = await self.session.post(

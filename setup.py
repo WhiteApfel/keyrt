@@ -1,5 +1,6 @@
-from setuptools import setup
 from io import open
+
+from setuptools import setup
 
 
 def read(filename):
@@ -14,7 +15,7 @@ def requirements():
 
 setup(
     name="keyrt",
-    version='0.0.1a1',
+    version="0.0.1a2",
     packages=["keyrt", "keyrt.models"],
     url="https://github.com/WhiteApfel/keyrt",
     license="Mozilla Public License 2.0",

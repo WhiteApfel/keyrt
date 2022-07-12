@@ -1,6 +1,6 @@
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Iterator
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class Category(BaseModel):
@@ -44,8 +44,27 @@ class Camera(BaseModel):
 
 
 class Cameras(BaseModel):
-    items: List[Camera]
+    cameras: List[Camera] = Field(..., alias='items')
     total: int
+
+    def __getitem__(self, item):
+        # by camera id
+        for camera in self.cameras:
+            if camera.id == str(item):
+                return camera
+
+        # by title
+        for camera in self.cameras:
+            if camera.title == str(item):
+                return camera
+
+        return self.cameras[item]
+
+    def __iter__(self) -> Iterator[Camera]:
+        return iter(self.cameras)
+
+    def __len__(self):
+        return len(self.cameras)
 
 
 class CamerasResponse(BaseModel):

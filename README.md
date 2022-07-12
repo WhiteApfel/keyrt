@@ -19,6 +19,6 @@ from keyrt import KeyRT
 async def main():
     keyrt_client = KeyRT(access_token='YOUR_ACCESS_TOKEN'
                          )
-    devices_response = await keyrt_client.get_devices()
-    assert await keyrt_client.open_device(devices_response.data.devices[0].id)
+    devices = await keyrt_client.get_devices()
+    assert await keyrt_client.open_device(devices.devices[0].id)
 ```

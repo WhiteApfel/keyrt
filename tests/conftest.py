@@ -2,8 +2,8 @@ import pytest
 
 from keyrt import KeyRT
 
-KEYRT_ACCESS_TOKEN_VALID = 'rocketbank_sexy'
-KEYRT_ACCESS_TOKEN_INVALID = 'sberbank_pesiy_anus'
+KEYRT_ACCESS_TOKEN_VALID = "rocketbank_sexy"
+KEYRT_ACCESS_TOKEN_INVALID = "sberbank_pesiy_anus"
 
 USER_RESPONSE_JSON = """
 {
@@ -141,7 +141,7 @@ DEVICES_RESPONSE_JSON = """
         "is_favorite": false,
         "is_active": true,
         "name_by_company": "Подъезд №1",
-        "name_by_user": "Дверь ",
+        "name_by_user": "115/1",
         "accept_concierge_call": false,
         "capabilities": [
           {
@@ -323,7 +323,7 @@ CODES_RESPONSE_JSON = """
                 "id": 811
               },
               "type": "intercom",
-              "title": "Дверь ",
+              "title": "115/1",
               "full_code": null,
               "call_number": null
             },

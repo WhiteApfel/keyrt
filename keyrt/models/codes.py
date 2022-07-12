@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import Any, List, Optional
+from typing import Any, Iterator, List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class FlatItem(BaseModel):
@@ -55,8 +55,42 @@ class Code(BaseModel):
 
 
 class Codes(BaseModel):
-    items: List[Code]
+    codes: List[Code] = Field(..., alias='items')
     total: int
+
+    @property
+    def temporary(self) -> Codes:
+        codes = [code for code in self.codes if code.type == "temporary"]
+        return Codes(items=codes, total=len(codes))
+
+    @property
+    def emergency(self) -> Codes:
+        codes = [code for code in self.codes if code.type == "emergency"]
+        return Codes(items=codes, total=len(codes))
+
+    def __getitem__(self, item):
+        # temporary by code id
+        for code in self.temporary:
+            if code.id == int(item):
+                return code
+
+        # temporary by device_id
+        for code in self.temporary:
+            if code.statuses[0].device.id == int(item):
+                return code
+
+        # temporary by name
+        for code in self.temporary:
+            if code.statuses[0].device.title == str(item):
+                return code
+
+        return self.codes[item]
+
+    def __iter__(self) -> Iterator[Code]:
+        return iter(self.codes)
+
+    def __len__(self):
+        return len(self.codes)
 
 
 class CodesResponse(BaseModel):
