@@ -1,6 +1,6 @@
 from typing import Any, List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, validator, root_validator
 
 
 class Company(BaseModel):
@@ -53,18 +53,39 @@ class Flat(BaseModel):
     room_permissions: RoomPermissions
     actions_permissions: List[str]
     is_subscription_enable: bool
+    building_id: str
+    entrance_id: str
+    floor_id: str
 
 
 class Floor(BaseModel):
     id: str
     name: str
     flats: List[Flat]
+    building_id: str
+    entrance_id: str
+
+    @root_validator(pre=True)
+    def entrance_flats(cls, values):
+        for i in range(len(values["flats"])):
+            values["flats"][i]["building_id"] = values["building_id"]
+            values["flats"][i]["entrance_id"] = values["building_id"]
+            values["flats"][i]["floor_id"] = values["id"]
+        return values
 
 
 class Entrance(BaseModel):
     id: str
     name: str
     floors: List[Floor]
+    building_id: str
+
+    @root_validator(pre=True)
+    def entrance_floors(cls, values):
+        for i in range(len(values["floors"])):
+            values["floors"][i]["building_id"] = values["building_id"]
+            values["floors"][i]["entrance_id"] = values["id"]
+        return values
 
 
 class Building(BaseModel):
@@ -79,6 +100,12 @@ class Building(BaseModel):
     company_id: int
     utc_offset: int
     entrances: List[Entrance]
+
+    @root_validator(pre=True)
+    def entrance_enhancer(cls, values):
+        for i in range(len(values["entrances"])):
+            values["entrances"][i]["building_id"] = values["id"]
+        return values
 
 
 class User(BaseModel):
@@ -107,6 +134,17 @@ class User(BaseModel):
     archived_at: Any
     updated_at: str
     buildings: List[Building]
+
+    @property
+    def all_flats(self) -> list[Flat]:
+        flats = []
+        for build in self.buildings:
+            for entrance in build.entrances:
+                for floor in entrance.floors:
+                    for flat in floor.flats:
+                        flats.append(flat)
+
+        return flats
 
 
 class UserResponse(BaseModel):

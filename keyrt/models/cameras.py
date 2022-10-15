@@ -44,7 +44,7 @@ class Camera(BaseModel):
 
 
 class Cameras(BaseModel):
-    cameras: List[Camera] = Field(..., alias='items')
+    cameras: List[Camera] = Field(..., alias="items")
     total: int
 
     def __getitem__(self, item):

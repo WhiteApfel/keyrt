@@ -55,7 +55,7 @@ class Code(BaseModel):
 
 
 class Codes(BaseModel):
-    codes: List[Code] = Field(..., alias='items')
+    codes: List[Code] = Field(..., alias="items")
     total: int
 
     @property

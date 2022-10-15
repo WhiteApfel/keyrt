@@ -39,7 +39,7 @@ async def test_generate_codes(keyrt_client: KeyRT):
         status_code = 400
         if (
             (data := json.loads(request.content.decode()))
-            and data["device_ids"] == ["131313"]
+            and data["devices_ids"] == [131313]
             and data["flat_id"] == 425783
         ):
             status_code = 202
@@ -53,7 +53,7 @@ async def test_generate_codes(keyrt_client: KeyRT):
     devices = await keyrt_client.get_devices()
 
     assert await keyrt_client.generate_code(
-        device_ids=devices[0].id,
+        devices_ids=devices[0].id,
         flat_id=user.buildings[0].entrances[0].floors[0].flats[0].id,
     )
 
