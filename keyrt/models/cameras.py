@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Any, List, Optional, Iterator
 
 from pydantic import BaseModel, Field
@@ -37,7 +38,7 @@ class Camera(BaseModel):
     streamer_token: str
     streamer_url: str
     title: str
-    updated_at: str
+    updated_at: datetime
     user_token: str
     utc_offset: int
     vendor: str

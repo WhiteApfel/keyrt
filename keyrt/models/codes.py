@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import datetime
 from typing import Any, Iterator, List, Optional
 
 from pydantic import BaseModel, Field
@@ -48,9 +49,9 @@ class Code(BaseModel):
     owner: Optional[UserInfo]
     creator_type: str
     creator: Optional[UserInfo]
-    created_at: str
-    begin_at: str
-    expires_at: str
+    created_at: datetime
+    begin_at: datetime
+    expires_at: datetime
     statuses: List[Status]
 
 

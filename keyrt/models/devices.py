@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Any, List, Optional
 
 from pydantic import BaseModel
@@ -11,8 +12,8 @@ class Capability(BaseModel):
 class InterCode(BaseModel):
     id: int
     code: str
-    start_date: str
-    end_date: Any
+    start_date: datetime
+    end_date: datetime | None
     inter_code_type: str
 
 
