@@ -29,7 +29,7 @@ class Device(BaseModel):
     is_favorite: bool
     is_active: bool
     name_by_company: str
-    name_by_user: str
+    name_by_user: str | None
     accept_concierge_call: bool
     capabilities: List[Capability]
     inter_codes: List[InterCode]
