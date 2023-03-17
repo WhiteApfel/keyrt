@@ -15,7 +15,7 @@ def requirements():
 
 setup(
     name="keyrt",
-    version="0.0.2a2",
+    version="0.0.3a1",
     packages=["keyrt", "keyrt.models"],
     url="https://github.com/WhiteApfel/keyrt",
     license="Mozilla Public License 2.0",

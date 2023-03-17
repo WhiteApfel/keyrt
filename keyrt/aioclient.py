@@ -1,10 +1,11 @@
 import time
 from base64 import b64encode, b64decode
+from io import BytesIO
 from typing import Literal
 
 from httpx import AsyncClient
 
-from keyrt.models.cameras import Cameras, CamerasResponse
+from keyrt.models.cameras import Cameras, CamerasResponse, Camera
 from keyrt.models.codes import Codes, CodesResponse
 from keyrt.models.devices import DevicesResponse, Devices
 from keyrt.models.tokens import OauthTokensResponse
@@ -32,6 +33,7 @@ class KeyRT:
         json: dict | None = None,
         headers: dict | None = None,
         access_token: str | None = None,
+        cookies: dict | None = None
     ):
         if access_token is not None:
             headers = (headers or {}) | {"Authorization": f"Bearer {access_token}"}
@@ -42,6 +44,7 @@ class KeyRT:
             params=params,
             json=json,
             data=data,
+            cookies=cookies,
         )
 
     async def current_user(self, access_token: str = None) -> User:
@@ -74,6 +77,30 @@ class KeyRT:
         )
 
         return CamerasResponse(**response.json()).data
+
+    async def get_camera_shot(self, camera: Camera, timestamp: str, access_token: str = None) -> BytesIO:
+        shot_url = camera.screenshot_url_template
+        shot_url = (
+            shot_url.replace("{size}", "original")
+            .replace("{timestamp}", timestamp or str(int(time.time())))
+            .replace("{cdn_token}", camera.screenshot_token)
+        )
+
+        response = await self.request(
+            method="GET",
+            url=shot_url,
+            cookies={
+                "utoken": camera.user_token
+            },
+            access_token=access_token,
+        )
+
+        if response.is_success:
+            buffer = BytesIO()
+            buffer.write(response.content)
+            buffer.seek(0)
+            return buffer
+        raise ValueError(f"{response.status_code} {response.text=}")
 
     async def open_device(self, device_id: str, access_token: str = None) -> bool:
         response = await self.request(
